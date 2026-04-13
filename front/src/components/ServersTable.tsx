@@ -76,9 +76,11 @@ export function ServersTable({ servers }: ServersTableProps) {
             </tr>
           ) : (
             servers.map((server, index) => {
+                console.log(server);
+                console.log(server?.statusData);
               // Безопасное получение данных с fallback значениями
               const address = server?.address ?? '-'
-              const statusData = server?.StatusData
+              const statusData = server?.statusData
               const name = statusData?.name ?? '-'
               const map = statusData?.map ?? '-'
               const players = statusData?.players ?? 0

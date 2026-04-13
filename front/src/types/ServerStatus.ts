@@ -1,4 +1,4 @@
-export interface StatusData {
+export interface statusData {
   map?: string;
   name?: string;
   tags?: string[];
@@ -14,7 +14,7 @@ export interface StatusData {
 
 export interface ServerInformation {
   address?: string;
-  StatusData?: StatusData;
+  statusData?: statusData;
   inferredTags?: object[];
 }
 
