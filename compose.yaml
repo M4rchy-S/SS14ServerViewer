@@ -1,0 +1,7 @@
+﻿services:
+  webserverobserver:
+    image: webserverobserver
+    build:
+      context: .
+      dockerfile: WebServerObserver/Dockerfile
+
