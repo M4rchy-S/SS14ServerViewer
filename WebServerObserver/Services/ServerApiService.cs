@@ -1,4 +1,5 @@
 using FluentResults;
+using Newtonsoft.Json;
 
 namespace WebServerObserver.Services;
 
@@ -11,14 +12,22 @@ public class ServerApiService
             _httpClient = httpClient;
         }
 
-        public async Task<Result<string>> GetServers()
+        public async Task<Result<List<ServerStatusModel.ServerInformation>>> GetServers()
         {
             var response = await _httpClient.GetAsync("/hub/api/servers");
             if (!response.IsSuccessStatusCode)
             {
-                Result.Fail($"Error during request: {response.ReasonPhrase}");
+                return Result.Fail($"Error during request: {response.ReasonPhrase}");
             }
             
-            return Result.Ok(await response.Content.ReadAsStringAsync());
+            var stringResult = await response.Content.ReadAsStringAsync();
+            
+            List<ServerStatusModel.ServerInformation> myDeserializedClass = JsonConvert.DeserializeObject<List<ServerStatusModel.ServerInformation>>(stringResult);
+            if (myDeserializedClass == null)
+            {
+                return Result.Fail($"Error during json conversion: {stringResult}"); 
+            }
+            
+            return Result.Ok(myDeserializedClass);
         }
 }

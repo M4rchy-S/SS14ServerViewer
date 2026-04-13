@@ -16,7 +16,7 @@ public class MainController : ControllerBase
     }
 
     [HttpGet("servers")]
-    public async Task<IActionResult> GetMarketAssets()
+    public async Task<IActionResult> GetServers()
     {
         var result = await _serverApiService.GetServers();
         
