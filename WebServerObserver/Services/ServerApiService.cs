@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FluentResults;
 using Newtonsoft.Json;
 
@@ -6,13 +7,19 @@ namespace WebServerObserver.Services;
 public class ServerApiService
 {
         private readonly HttpClient _httpClient;
+        private static ImmutableList<ServerStatusModel.ServerInformation> _cachedServers = ImmutableList<ServerStatusModel.ServerInformation>.Empty;
     
         public ServerApiService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
+        
+        public List<ServerStatusModel.ServerInformation> GetServers()
+        {
+            return _cachedServers.ToList();
+        }
 
-        public async Task<Result<List<ServerStatusModel.ServerInformation>>> GetServers()
+        public async Task<Result<List<ServerStatusModel.ServerInformation>>> UpdateServers()
         {
             var response = await _httpClient.GetAsync("/hub/api/servers");
             if (!response.IsSuccessStatusCode)
@@ -22,12 +29,14 @@ public class ServerApiService
             
             var stringResult = await response.Content.ReadAsStringAsync();
             
-            List<ServerStatusModel.ServerInformation> myDeserializedClass = JsonConvert.DeserializeObject<List<ServerStatusModel.ServerInformation>>(stringResult);
-            if (myDeserializedClass == null)
+            List<ServerStatusModel.ServerInformation> serverInformations = JsonConvert.DeserializeObject<List<ServerStatusModel.ServerInformation>>(stringResult);
+            if (serverInformations == null)
             {
                 return Result.Fail($"Error during json conversion: {stringResult}"); 
             }
             
-            return Result.Ok(myDeserializedClass);
+            _cachedServers = serverInformations.ToImmutableList();
+            
+            return Result.Ok(serverInformations);
         }
 }

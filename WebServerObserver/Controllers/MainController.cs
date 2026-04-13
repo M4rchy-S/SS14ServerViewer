@@ -16,16 +16,20 @@ public class MainController : ControllerBase
     }
 
     [HttpGet("servers")]
-    public async Task<IActionResult> GetServers()
+    public IActionResult GetServers()
     {
-        var result = await _serverApiService.GetServers();
-        
-        if(result.IsFailed)
+        var result = _serverApiService.GetServers();
+        if(result.Count == 0)
         {
-            return StatusCode(500, result.Errors.First().Message);
+            return StatusCode(503, new ProblemDetails
+            {
+                Status = StatusCodes.Status503ServiceUnavailable,
+                Title = "Service Unavailable",
+                Detail = "No data available yet. Please try again later."
+            });
         }
         
-        return Ok(result.Value);
+        return Ok(result);
     }
     
     

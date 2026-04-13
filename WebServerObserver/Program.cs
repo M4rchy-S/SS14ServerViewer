@@ -1,3 +1,4 @@
+using WebServerObserver.BackgroundServices;
 using WebServerObserver.Middlewars;
 using WebServerObserver.Services;
 
@@ -13,6 +14,9 @@ builder.Services.AddHttpClient<ServerApiService>(client =>
     client.BaseAddress = new Uri("https://central.spacestation14.io");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
+
+// builder.Services.AddSingleton<ServerApiService>();
+builder.Services.AddHostedService<DataFetchWorker>();
 
 // builder.Configuration.AddJsonFile("appsettings.json");
 
