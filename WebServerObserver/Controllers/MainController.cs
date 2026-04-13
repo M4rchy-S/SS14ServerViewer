@@ -18,11 +18,11 @@ public class MainController : ControllerBase
     [HttpGet("servers")]
     public async Task<IActionResult> GetMarketAssets()
     {
-        var result = await _serverApiService.getServers();
+        var result = await _serverApiService.GetServers();
         
         if(result.IsFailed)
         {
-            return StatusCode(500, result.Errors);
+            return StatusCode(500, result.Errors.First().Message);
         }
         
         return Ok(result.Value);

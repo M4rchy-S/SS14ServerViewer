@@ -11,7 +11,7 @@ public class ServerApiService
             _httpClient = httpClient;
         }
 
-        public async Task<Result<string>> getServers()
+        public async Task<Result<string>> GetServers()
         {
             var response = await _httpClient.GetAsync("/hub/api/servers");
             if (!response.IsSuccessStatusCode)
