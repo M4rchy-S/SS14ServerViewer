@@ -15,10 +15,17 @@ builder.Services.AddHttpClient<ServerApiService>(client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
-// builder.Services.AddSingleton<ServerApiService>();
 builder.Services.AddHostedService<DataFetchWorker>();
 
-// builder.Configuration.AddJsonFile("appsettings.json");
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") 
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddOpenApi();
 
@@ -28,6 +35,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors("AllowReactApp");
 
 app.UseExceptionHandler();
 
