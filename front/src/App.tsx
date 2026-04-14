@@ -43,7 +43,7 @@ function App() {
                 Space Station 14
               </h1>
               <p className="text-xl text-slate-400 font-medium">
-                Мониторинг серверов
+                Server monitoring
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ function App() {
             <div className="px-6 py-3 bg-gradient-to-r from-slate-800/60 to-slate-700/60 backdrop-blur-sm border border-slate-600/30 rounded-full shadow-lg">
               <p className="text-slate-300 text-sm">
                 <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                Онлайн мониторинг в реальном времени
+                Real-time online monitoring
               </p>
             </div>
           </div>
@@ -62,7 +62,7 @@ function App() {
           <div className="text-center py-16">
             <div className="inline-flex items-center gap-4 px-8 py-6 bg-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-2xl shadow-2xl">
               <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
-              <p className="text-slate-300 text-lg font-medium">Загрузка данных...</p>
+              <p className="text-slate-300 text-lg font-medium">Loading data...</p>
             </div>
           </div>
         )}
@@ -72,7 +72,7 @@ function App() {
             <div className="bg-gradient-to-r from-red-950/50 to-red-900/50 backdrop-blur-sm border border-red-500/30 text-red-200 p-6 rounded-2xl shadow-2xl">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">⚠️</span>
-                <h3 className="text-lg font-semibold">Ошибка загрузки</h3>
+                <h3 className="text-lg font-semibold">Loading error</h3>
               </div>
               <p className="text-red-300/80">{error}</p>
             </div>
@@ -80,10 +80,7 @@ function App() {
         )}
 
         <div className="base">
-          <h1 className="text-3xl font-bold underline">
-            Hello world!
-          </h1>
-            
+          {!loading && !error && servers.length > 0 && <ServersTable servers={servers} />}
         </div>
       </div>
     </div>
