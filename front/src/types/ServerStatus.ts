@@ -10,12 +10,13 @@ export interface statusData {
   panic_bunker: boolean;
   round_start_time: string; // ISO string from JSON
   soft_max_players: number;
+  language: string;
+  region: string;
 }
 
 export interface ServerInformation {
   address: string;
   statusData: statusData;
-  inferredTags: object[];
 }
 
 

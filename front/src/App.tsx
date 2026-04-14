@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import './App.css'
 import type {ServerInformation} from "./types/ServerStatus.ts";
 import {ServersTable} from "./components/ServersTable.tsx";
@@ -11,10 +11,19 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:3000/api/servers")
       .then(res => res.json())
-      .then(data => {
-        data = data as ServerInformation[];
-        console.log(data);
-        setServers(data)
+      .then(servers => {
+        servers = servers as ServerInformation[];
+        servers.forEach((server: ServerInformation) => {
+          server.statusData.tags.forEach((tag) => {
+            if (tag.startsWith("lang:")) {
+              server.statusData.language = tag.split("lang:")[1];
+            } else if (tag.startsWith("region:")) {
+              server.statusData.region = tag.split("region:")[1];
+            }
+          });
+        });
+        console.log(servers);
+        setServers(servers)
         setLoading(false)
       })
       .catch(err => {

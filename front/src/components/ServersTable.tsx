@@ -29,6 +29,7 @@ export function ServersTable({ servers }: ServersTableProps) {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [searchTerm, setSearchTerm] = useState('')
 
   const columns = useMemo(
     () => [
@@ -114,42 +115,40 @@ export function ServersTable({ servers }: ServersTableProps) {
         },
         size: 100,
       }),
-      columnHelper.accessor((row) => row.statusData?.tags ?? [], {
-        id: 'tags',
-        header: '🏷️ Tags',
-        cell: (info) => {
-          const tags = info.getValue()
-          return (
-            <div className="flex flex-wrap gap-1 max-w-32">
-              {tags.length > 0 ? (
-                tags.slice(0, 2).map((tag: string, i: number) => (
-                  <Badge
-                    key={i}
-                    variant="outline"
-                    className="text-purple-300 border-purple-500/30 text-xs"
-                  >
-                    {tag}
-                  </Badge>
-                ))
-              ) : (
-                <span className="text-white italic text-xs">-</span>
-              )}
-              {tags.length > 2 && (
-                <Badge variant="outline" className="text-white text-xs border-white/30">
-                  +{tags.length - 2}
-                </Badge>
-              )}
-            </div>
-          )
-        },
-        size: 120,
+      columnHelper.accessor((row) => row.statusData?.language ?? '-', {
+        id: 'language',
+        header: '🌐 Language',
+        cell: (info) => (
+          <Badge variant="outline" className="text-blue-300 border-blue-500/30 text-xs">
+            {info.getValue()}
+          </Badge>
+        ),
+        size: 100,
+      }),
+      columnHelper.accessor((row) => row.statusData?.region ?? '-', {
+        id: 'region',
+        header: '🌍 Region',
+        cell: (info) => (
+          <Badge variant="outline" className="text-cyan-300 border-cyan-500/30 text-xs">
+            {info.getValue()}
+          </Badge>
+        ),
+        size: 100,
       }),
     ],
     []
   )
 
+  const filteredServers = useMemo(() => {
+    return servers.filter((server) =>
+      server.statusData?.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  }, [servers, searchTerm])
+
   const table = useReactTable({
-    data: servers,
+    data: filteredServers,
     columns,
     state: {
       sorting,
@@ -175,6 +174,28 @@ export function ServersTable({ servers }: ServersTableProps) {
 
   return (
     <div className="w-full space-y-4">
+      {/* Search Bar */}
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="🔍 Search by server name..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+            setPagination({ pageIndex: 0, pageSize: 10 })
+          }}
+          className="flex-1 px-4 py-2 rounded-lg bg-black/50 border border-purple-500/30 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all"
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            className="px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            ✕ Clear
+          </button>
+        )}
+      </div>
+
       <div className="rounded-xl border border-purple-500/30 shadow-2xl bg-black/80 backdrop-blur-sm">
         <Table>
           <TableHeader>
@@ -229,8 +250,8 @@ export function ServersTable({ servers }: ServersTableProps) {
             Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{' '}
             {Math.min(
               (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-              servers.length
-            )} of {servers.length} servers
+              filteredServers.length
+            )} of {filteredServers.length} servers
           </span>
         </div>
 
@@ -285,15 +306,21 @@ export function ServersTable({ servers }: ServersTableProps) {
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-blue-300 font-semibold text-xs">Active:</span>
+            <span className="text-blue-300 font-semibold text-xs">Filtered:</span>
             <Badge className="bg-blue-600 text-white border-blue-400">
-              {servers.filter(s => !s.statusData?.panic_bunker).length}
+              {filteredServers.length}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-green-300 font-semibold text-xs">Active:</span>
+            <Badge className="bg-green-600 text-white border-green-400">
+              {filteredServers.filter(s => !s.statusData?.panic_bunker).length}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-red-300 font-semibold text-xs">On hold:</span>
             <Badge variant="destructive" className="bg-red-600 text-white border-red-400">
-              {servers.filter(s => s.statusData?.panic_bunker).length}
+              {filteredServers.filter(s => s.statusData?.panic_bunker).length}
             </Badge>
           </div>
         </div>
