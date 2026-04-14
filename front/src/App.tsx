@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import type {ServerInformation} from "./types/ServerStatus.ts";
-import { ServersTable } from "./components/ServersTable.tsx";
+import {ServersTable} from "./components/ServersTable.tsx";
 
 function App() {
   const [servers, setServers] = useState([] as ServerInformation[])
@@ -18,15 +18,14 @@ function App() {
         setLoading(false)
       })
       .catch(err => {
-        console.error("CORS или сетевая ошибка:", err)
-        setError("Не удалось загрузить данные")
+        console.error("Network error:", err)
+        setError("Error during fetching server data. Please try again later.")
         setLoading(false)
       })
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 relative overflow-hidden">
-      {/* Фоновые декоративные элементы */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -80,11 +79,12 @@ function App() {
           </div>
         )}
 
-        {!loading && !error && (
-          <div className="animate-fade-in">
-            <ServersTable servers={servers} />
-          </div>
-        )}
+        <div className="base">
+          <h1 className="text-3xl font-bold underline">
+            Hello world!
+          </h1>
+            
+        </div>
       </div>
     </div>
   )
