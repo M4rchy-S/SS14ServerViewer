@@ -37,8 +37,8 @@ export function ServersTable({ servers }: ServersTableProps) {
         id: 'name',
         header: '📛 Name',
         cell: (info) => (
-          <div className="max-w-48 truncate" title={info.getValue()}>
-            <h4>
+          <div className="break-words whitespace-normal min-w-10/12" title={info.getValue()}>
+            <h4 className="text-sm leading-tight">
               {info.getValue()}
             </h4>
           </div>
@@ -120,7 +120,7 @@ export function ServersTable({ servers }: ServersTableProps) {
         header: '🌐 Language',
         cell: (info) => (
           <Badge variant="outline" className="text-blue-300 border-blue-500/30 text-xs">
-            {info.getValue()}
+            {info.getValue().toUpperCase()}
           </Badge>
         ),
         size: 100,
@@ -130,7 +130,7 @@ export function ServersTable({ servers }: ServersTableProps) {
         header: '🌍 Region',
         cell: (info) => (
           <Badge variant="outline" className="text-cyan-300 border-cyan-500/30 text-xs">
-            {info.getValue()}
+            {info.getValue().toUpperCase()}
           </Badge>
         ),
         size: 100,
