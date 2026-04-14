@@ -1,37 +1,34 @@
-import {useEffect, useState} from 'react'
+import { useQuery } from '@tanstack/react-query'
 import './App.css'
 import type {ServerInformation} from "./types/ServerStatus.ts";
 import {ServersTable} from "./components/ServersTable.tsx";
 
-function App() {
-  const [servers, setServers] = useState([] as ServerInformation[])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+const fetchServers = async (): Promise<ServerInformation[]> => {
+  const res = await fetch("http://localhost:3000/api/servers")
+  if (!res.ok) {
+    throw new Error("Error during fetching server data. Please try again later.")
+  }
+  const servers = await res.json() as ServerInformation[]
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/servers")
-      .then(res => res.json())
-      .then(servers => {
-        servers = servers as ServerInformation[];
-        servers.forEach((server: ServerInformation) => {
-          server.statusData.tags.forEach((tag) => {
-            if (tag.startsWith("lang:")) {
-              server.statusData.language = tag.split("lang:")[1];
-            } else if (tag.startsWith("region:")) {
-              server.statusData.region = tag.split("region:")[1];
-            }
-          });
-        });
-        console.log(servers);
-        setServers(servers)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error("Network error:", err)
-        setError("Error during fetching server data. Please try again later.")
-        setLoading(false)
-      })
-  }, []);
+  // Parse language and region from tags
+  servers.forEach((server) => {
+    server.statusData.tags.forEach((tag) => {
+      if (tag.startsWith("lang:")) {
+        server.statusData.language = tag.split("lang:")[1]
+      } else if (tag.startsWith("region:")) {
+        server.statusData.region = tag.split("region:")[1]
+      }
+    })
+  })
+
+  return servers
+}
+
+function App() {
+  const { data: servers = [], isLoading: loading, error } = useQuery({
+    queryKey: ['servers'],
+    queryFn: fetchServers,
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 relative overflow-hidden">
@@ -83,7 +80,7 @@ function App() {
                 <span className="text-2xl">⚠️</span>
                 <h3 className="text-lg font-semibold">Loading error</h3>
               </div>
-              <p className="text-red-300/80">{error}</p>
+              <p className="text-red-300/80">{error instanceof Error ? error.message : "Unknown error"}</p>
             </div>
           </div>
         )}
