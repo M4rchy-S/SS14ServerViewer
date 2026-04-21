@@ -15,6 +15,14 @@ The application automatically updates server information in the background and d
 
 ---
 
+## 🚀 Quick Docker-Compose build
+1. Clone the repository and navigate to the project directory:
+2. Run Docker
+```
+docker-compose up
+```
+3. Open in your browser: `http://localhost:80`
+
 ## 🎯 Key Features
 
 ### Backend
