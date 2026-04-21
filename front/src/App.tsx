@@ -4,7 +4,7 @@ import type {ServerInformation} from "./types/ServerStatus.ts";
 import {ServersTable} from "./components/ServersTable.tsx";
 
 const fetchServers = async (): Promise<ServerInformation[]> => {
-  const res = await fetch("http://localhost:3000/api/servers")
+  const res = await fetch("/api/servers")
   if (!res.ok) {
     throw new Error("Error during fetching server data. Please try again later.")
   }

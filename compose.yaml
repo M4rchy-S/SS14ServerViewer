@@ -1,7 +1,21 @@
 ﻿services:
-  webserverobserver:
-    image: webserverobserver
+  backend:
     build:
-      context: .
-      dockerfile: WebServerObserver/Dockerfile
+      context: ./back
+      dockerfile: ./Dockerfile
+    networks:
+      - app-network
+  frontend:
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
+networks:
+  app-network:
+    driver: bridge
